@@ -19,12 +19,14 @@ public class Tree {
         if(n > node.getData()){
             if(node.right == null){
                 node.right = new Node(n);
+                node.right.father = node;
             }else{
                 addElement(n,node.right);
             }
         }else if(n < node.getData()){
             if(node.left == null){
                 node.left = new Node(n);
+                node.left.father = node;
             }else{
                 addElement(n,node.left);
             }
@@ -42,10 +44,10 @@ public class Tree {
     }
     public boolean removeElement(int n){
         Node current = root;
-        Node father = root;
+        //Node father = root;
         boolean isLeftSon = true;
         while(current.getData() != n){
-            father = current;
+            //father = current;
             if(current.getData() > n){
                 isLeftSon = true;
                 current = current.left;
@@ -60,9 +62,9 @@ public class Tree {
             if(current == root){
                 root = null;
             }else if(isLeftSon){
-                father.left = null;
+                current.father.left = null;
             }else{
-                father.right = null;
+                current.father.right = null;
             }
         }else if (current.left != null && current.right != null){//two nodes
             Node tmp = current.right;
@@ -76,9 +78,9 @@ public class Tree {
                 if(current == root){
                     root = successor;
                 }else if(isLeftSon){
-                    father.left = successor;
+                    current.father.left = successor;
                 }else{
-                    father.right = successor;
+                    current.father.right = successor;
                 }
                 successor.left = current.left;
                 successor.right = current.right;
@@ -86,9 +88,9 @@ public class Tree {
                 if(current == root){
                     root = tmp;
                 }else if(isLeftSon){
-                    father.left = tmp;
+                    current.father.left = tmp;
                 }else{
-                    father.right = tmp;
+                    current.father.right = tmp;
                 }
                 tmp.left = current.left;
                 tmp.right = current.right;
@@ -97,17 +99,17 @@ public class Tree {
             if(current == root){
                 root = current.left;
             }else if (isLeftSon){
-                father.left = current.right;
+                current.father.left = current.right;
             }else{
-                father.right = current.right;
+                current.father.right = current.right;
             }
         }else if (current.right == null){//only left
             if(current == root){
                 root = current.right;
             }else if(isLeftSon){
-                father.left = current.left;
+                current.father.left = current.left;
             }else {
-                father.right = current.left;
+                current.father.right = current.left;
             }
         }
         return true;
@@ -121,13 +123,14 @@ public class Tree {
         int left, right;
         if (node.left != null) {
             left = heightOfTree(node.left);
-        }else
+        }else {
             left = -1;
+        }
         if (node.right != null) {
             right = heightOfTree(node.right);
-        }else
+        }else {
             right = -1;
-        int max = left > right ? left : right;
-        return max+1;
+        }
+        return (left > right ? left : right) + 1;
     }
 }
