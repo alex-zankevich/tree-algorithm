@@ -7,6 +7,9 @@ public class Tree {
     public Tree(){
         size = 0;
     }
+    public Node getRoot() {
+        return root;
+    }
     public void addElement(int n){
         if(root == null){
             root = new Node(n);
