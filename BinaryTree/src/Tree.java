@@ -1,11 +1,23 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
+
 /**
  * Created by user on 12.02.2015.
  */
 public class Tree {
     protected Node root;
-    protected int size;
-    public Tree(){
-        size = 0;
+    public void initTreeFromFile(String path) throws FileNotFoundException {
+        Scanner sc = new Scanner(new FileInputStream(path));
+        while(sc.hasNext()){
+            this.addElement(sc.nextInt());
+        }
+    }
+    public void writeTreeToFile(String path) throws FileNotFoundException {
+        PrintStream ps = new PrintStream(new FileOutputStream(path));
+        traverseAndWrite(root,ps);
     }
     public Node getRoot() {
         return root;
@@ -16,7 +28,6 @@ public class Tree {
         }else {
             addElement(n, root);
         }
-        size++;
     }
     public void addElement(int n, Node node){
         if(n > node.getData()){
@@ -35,14 +46,11 @@ public class Tree {
             }
         }
     }
-    public void showTree(){
-        showTree(root);
-    }
-    public void showTree(Node node){
+    public void traverseAndWrite(Node node,PrintStream ps){
         if(node != null){
-            showTree(node.left);
-            showTree(node.right);
-            System.out.println(node.getData());
+            ps.println(node.getData());
+            traverseAndWrite(node.left,ps);
+            traverseAndWrite(node.right,ps);
         }
     }
     public boolean removeElement(int n){

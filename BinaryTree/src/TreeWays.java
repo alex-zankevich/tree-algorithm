@@ -1,10 +1,16 @@
+import java.util.ArrayList;
+
 /**
  * Created by user on 16.02.2015.
  */
 public class TreeWays extends Tree{
+    private ArrayList<Integer> keys;
     private int count = -1;
     private int maxHeight = 0;
     private int countMaxElement = 0;
+    public TreeWays(){
+        keys = new ArrayList<Integer>();
+    }
     private void nullData(){
         maxHeight = countMaxElement = 0;
         count = -1;
@@ -36,6 +42,10 @@ public class TreeWays extends Tree{
         int maxCountM = countMaxElement;
         int maxHeightM = maxHeight+1;
         nullData();
+
+        if(node == root){
+            return maxCountM*maxCountN;
+        }
 
         if(maxHeightM == maxHeightN){
             maxCountM += maxCountN;
@@ -69,14 +79,17 @@ public class TreeWays extends Tree{
         int maxCountTmp = 0;
         int maxHeightTmp = 0;
 
-        while(current != root){
+        while(current != null){
             if(isLeft){
                 countWays(current.right);
             }else{
                 countWays(current.left);
             }
-
-            maxCountTmp = countMaxElement;
+            if(countMaxElement == 0){
+                maxCountTmp = 1;
+            }else{
+                maxCountTmp = countMaxElement;
+            }
             maxHeightTmp = maxHeight+1+counter;
             nullData();
 
@@ -86,30 +99,11 @@ public class TreeWays extends Tree{
             }else if(maxHeightTmp == maxHeightN){
                 maxCountN += maxCountTmp;
             }
-
-            if(current.father != root){
+            if(current != root) {
                 isLeft = current.father.left == current ? true : false;
                 current = current.father;
-            }else {
-                isLeft = current.father.left == current ? true : false;
-                current = current.father;
-                counter++;
-                if(isLeft){
-                    countWays(current.right);
-                }else{
-                    countWays(current.left);
-                }
-
-                maxCountTmp = countMaxElement;
-                maxHeightTmp = maxHeight+1+counter;
-                nullData();
-
-                if(maxHeightTmp > maxHeightN){
-                    maxHeightN = maxHeightTmp;
-                    maxCountN = maxCountTmp;
-                }else if(maxHeightTmp > maxHeightN){
-                    maxCountN += maxCountTmp;
-                }
+            }else{
+                break;
             }
             counter++;
         }
@@ -118,8 +112,13 @@ public class TreeWays extends Tree{
     public void traverseAndFind(Node node){
         if(node != null){
             traverseAndFind(node.right);
-            System.out.println(checkWays(node));
+            if(checkWays(node) % 2 != 0){
+                keys.add(node.getData());
+            }
             traverseAndFind(node.left);
         }
+    }
+    public void deleteMaxKey(){
+        removeElement(keys.get(0));
     }
 }
