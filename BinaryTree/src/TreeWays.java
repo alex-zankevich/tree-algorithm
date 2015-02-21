@@ -32,28 +32,37 @@ public class TreeWays extends Tree{
         --count;
     }
     public int checkWays(Node node){
+        int maxCountN,maxHeightN;
+        int maxCountM,maxHeightM;
 
-        countWays(node.left);
-        int maxCountN = countMaxElement;
-        int maxHeightN = maxHeight+1;
+        if(node.left != null) {
+            countWays(node.left);
+            maxCountN = countMaxElement;
+            maxHeightN = maxHeight + 1;
+        }else{
+            maxCountN = 1;
+            maxHeightN = 0;
+        }
         nullData();
 
-        countWays(node.right);
-        int maxCountM = countMaxElement;
-        int maxHeightM = maxHeight+1;
+        if(node.right != null) {
+            countWays(node.right);
+            maxCountM = countMaxElement;
+            maxHeightM = maxHeight + 1;
+        }else{
+            maxCountM = 1;
+            maxHeightM = 0;
+        }
         nullData();
-
+        if(node == root && (node.left == null && node.right == null)){
+            return 0;
+        }
         if(node == root){
             return maxCountM*maxCountN;
         }
 
-        if(maxHeightM == maxHeightN){
+        if(maxHeightM == maxHeightN && node.left != null){
             maxCountM += maxCountN;
-        }
-
-        if(node.right == null && node.left == null){
-            maxCountM = maxCountN = 1;
-            maxHeightM = maxHeightN = 0;
         }
 
         if(maxHeightN > maxHeightM){
@@ -87,10 +96,11 @@ public class TreeWays extends Tree{
             }
             if(countMaxElement == 0){
                 maxCountTmp = 1;
+                maxHeightTmp = counter;
             }else{
                 maxCountTmp = countMaxElement;
+                maxHeightTmp = maxHeight+1+counter;
             }
-            maxHeightTmp = maxHeight+1+counter;
             nullData();
 
             if(maxHeightTmp > maxHeightN){
@@ -119,6 +129,8 @@ public class TreeWays extends Tree{
         }
     }
     public void deleteMaxKey(){
-        removeElement(keys.get(0));
+        if(keys.size() != 0) {
+            removeElement(keys.get(0));
+        }
     }
 }

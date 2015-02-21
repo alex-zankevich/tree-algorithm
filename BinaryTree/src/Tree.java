@@ -55,10 +55,8 @@ public class Tree {
     }
     public boolean removeElement(int n){
         Node current = root;
-        //Node father = root;
         boolean isLeftSon = true;
         while(current.getData() != n){
-            //father = current;
             if(current.getData() > n){
                 isLeftSon = true;
                 current = current.left;
@@ -105,10 +103,11 @@ public class Tree {
                 }
                 tmp.left = current.left;
                 tmp.right = current.right;
+                tmp.father.left = null;
             }
         }else if(current.left == null){//only right
             if(current == root){
-                root = current.left;
+                root = current.right;
             }else if (isLeftSon){
                 current.father.left = current.right;
             }else{
@@ -116,7 +115,7 @@ public class Tree {
             }
         }else if (current.right == null){//only left
             if(current == root){
-                root = current.right;
+                root = current.left;
             }else if(isLeftSon){
                 current.father.left = current.left;
             }else {
