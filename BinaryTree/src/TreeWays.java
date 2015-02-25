@@ -5,9 +5,9 @@ import java.util.ArrayList;
  */
 public class TreeWays extends Tree{
     private ArrayList<Integer> keys;
-    private int count = -1;
-    private int maxHeight = 0;
-    private int countMaxElement = 0;
+    private static int count = -1;
+    private static int maxHeight = 0;
+    private static int countMaxElement = 0;
     public TreeWays(){
         keys = new ArrayList<Integer>();
     }
@@ -34,6 +34,7 @@ public class TreeWays extends Tree{
     public int checkWays(Node node){
         int maxCountN,maxHeightN;
         int maxCountM,maxHeightM;
+        int exCount,exHeight;
 
         if(node.left != null) {
             countWays(node.left);
@@ -54,17 +55,18 @@ public class TreeWays extends Tree{
             maxHeightM = 0;
         }
         nullData();
+
+
+
         if(node == root && (node.left == null && node.right == null)){
             return 0;
         }
         if(node == root){
             return maxCountM*maxCountN;
         }
-
-        if(maxHeightM == maxHeightN && node.left != null){
+        /*if(maxHeightM == maxHeightN && (node.left != null || node.right != null)){
             maxCountM += maxCountN;
-        }
-
+        }*/
         if(maxHeightN > maxHeightM){
             int tmpHeight = maxHeightM;
             int tmpCount = maxCountM;
@@ -77,9 +79,8 @@ public class TreeWays extends Tree{
 
         }
 
-        if(node == root){
-            return maxCountM*maxCountN;
-        }
+        exCount = maxCountN;
+        exHeight = maxHeightN;
 
         Node current = node.father;
         boolean isLeft = current.left == node ? true : false;
@@ -103,11 +104,11 @@ public class TreeWays extends Tree{
             }
             nullData();
 
-            if(maxHeightTmp > maxHeightN){
-                maxHeightN = maxHeightTmp;
-                maxCountN = maxCountTmp;
-            }else if(maxHeightTmp == maxHeightN){
-                maxCountN += maxCountTmp;
+            if(maxHeightTmp > exHeight){
+                exHeight = maxHeightTmp;
+                exCount = maxCountTmp;
+            }else if(maxHeightTmp == exHeight){
+                exCount += maxCountTmp;
             }
             if(current != root) {
                 isLeft = current.father.left == current ? true : false;
@@ -117,12 +118,20 @@ public class TreeWays extends Tree{
             }
             counter++;
         }
-        return maxCountM*maxCountN;
+        if(exHeight == maxHeightN){
+            return exCount*maxCountN+exCount*maxCountM+maxCountN*maxCountM;
+        }else if(exHeight < maxHeightN){
+            return maxCountM*maxCountN;
+        }else if(exHeight > maxCountN){
+            return exCount*maxCountM;
+        }
+        return 0;
     }
     public void traverseAndFind(Node node){
         if(node != null){
             traverseAndFind(node.right);
-            if(checkWays(node) % 2 != 0){
+            int count = checkWays(node);
+            if(count % 2 != 0){
                 keys.add(node.getData());
             }
             traverseAndFind(node.left);

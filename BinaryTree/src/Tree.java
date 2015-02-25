@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -15,6 +16,19 @@ public class Tree {
             this.addElement(sc.nextInt());
         }
     }
+    public void initRandom(int n,int r){
+        Random rand = new Random();
+        for(int i = 0; i < n; i++){
+            this.addElement(rand.nextInt(r));
+        }
+    }
+    public void showTree(Node node){
+        if(node != null){
+            System.out.println(node.getData());
+            showTree(node.left);
+            showTree(node.right);
+        }
+    }
     public void writeTreeToFile(String path) throws FileNotFoundException {
         PrintStream ps = new PrintStream(new FileOutputStream(path));
         traverseAndWrite(root,ps);
@@ -22,14 +36,14 @@ public class Tree {
     public Node getRoot() {
         return root;
     }
-    public void addElement(int n){
+    public  void addElement(int n){
         if(root == null){
             root = new Node(n);
         }else {
             addElement(n, root);
         }
     }
-    public void addElement(int n, Node node){
+    protected void addElement(int n, Node node){
         if(n > node.getData()){
             if(node.right == null){
                 node.right = new Node(n);
@@ -46,11 +60,11 @@ public class Tree {
             }
         }
     }
-    public void traverseAndWrite(Node node,PrintStream ps){
+    protected void traverseAndWrite(Node node,PrintStream ps){
         if(node != null){
             ps.println(node.getData());
-            traverseAndWrite(node.left,ps);
-            traverseAndWrite(node.right,ps);
+            traverseAndWrite(node.left, ps);
+            traverseAndWrite(node.right, ps);
         }
     }
     public boolean removeElement(int n){
@@ -63,7 +77,8 @@ public class Tree {
             }else if(current.getData() < n){
                 isLeftSon = false;
                 current = current.right;
-            }else if(current == null){
+            }
+            if(current == null){
                 return false;
             }
         }
@@ -80,54 +95,40 @@ public class Tree {
             while (tmp.left != null) {
                 tmp = tmp.left;
             }
-            if(tmp.right != null){
-                Node successor = tmp;
-                removeElement(tmp.getData());
-                successor.right = successor.left = null;
-                if(current == root){
-                    root = successor;
-                }else if(isLeftSon){
-                    current.father.left = successor;
-                }else{
-                    current.father.right = successor;
-                }
-                successor.left = current.left;
-                successor.right = current.right;
-            }else{
-                if(current == root){
-                    root = tmp;
-                }else if(isLeftSon){
-                    current.father.left = tmp;
-                }else{
-                    current.father.right = tmp;
-                }
-                tmp.left = current.left;
-                tmp.right = current.right;
-                tmp.father.left = null;
-            }
+            int tempData = tmp.getData();
+            removeElement(tmp.getData());
+            current.setData(tempData);
         }else if(current.left == null){//only right
             if(current == root){
                 root = current.right;
+                root.father = null;
             }else if (isLeftSon){
                 current.father.left = current.right;
+                current.right.father = current.father;
             }else{
                 current.father.right = current.right;
+                current.right.father = current.father;
             }
+            current = null;
         }else if (current.right == null){//only left
             if(current == root){
                 root = current.left;
+                root.father = null;
             }else if(isLeftSon){
                 current.father.left = current.left;
+                current.left.father = current.father;
             }else {
                 current.father.right = current.left;
+                current.left.father = current.father;
             }
+            current = null;
         }
         return true;
     }
     public  int heightOfTree(){
         return heightOfTree(root);
     }
-    private int heightOfTree(Node node){
+    protected int heightOfTree(Node node){
         if(node == null)
             return 0;
         int left, right;
